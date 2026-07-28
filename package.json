@@ -1,0 +1,18 @@
+{
+  "name": "puzzlebox-sentinel",
+  "version": "0.1.0",
+  "description": "Interior watcher for cliffhall/puzzlebox — dwell-time and activity monitoring inside states, emitting signed guard-evidence bundles",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "puzzlebox-sentinel": "src/cli.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "watch": "bun src/cli.ts watch",
+    "verify": "bun src/cli.ts verify"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
