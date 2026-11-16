@@ -310,6 +310,8 @@ export class StreamableHttpClient implements PuzzleboxClient {
     return parseToolResult(result);
   }
 
+  // The interface requires both parameters; this transport has no push channel, so it reads neither.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async subscribe(_uri: string, _onUpdated: () => void): Promise<boolean> {
     return false; // no server-push channel on this transport in v0 — poll instead
   }

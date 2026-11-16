@@ -40,9 +40,7 @@ export function verifyBundle(bundle: unknown, key: string): boolean {
   if (bundle === null || typeof bundle !== "object" || Array.isArray(bundle)) return false;
   const { hmac, ...rest } = bundle as Record<string, unknown>;
   if (typeof hmac !== "string" || !/^[0-9a-f]{64}$/.test(hmac)) return false;
-  const expected = createHmac("sha256", key)
-    .update(canonicalJson(rest))
-    .digest("hex");
+  const expected = createHmac("sha256", key).update(canonicalJson(rest)).digest("hex");
   const a = Buffer.from(hmac, "hex");
   const b = Buffer.from(expected, "hex");
   if (a.length !== b.length) return false;

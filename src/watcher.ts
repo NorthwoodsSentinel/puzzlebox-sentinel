@@ -3,13 +3,7 @@
 // ask it for an assessment. Puzzlebox guards see transitions; this sees the
 // time between them.
 
-import type {
-  DriftAdapter,
-  InteriorObservation,
-  UnsignedBundle,
-  Verdict,
-  WatcherConfig,
-} from "./types.ts";
+import type { DriftAdapter, InteriorObservation, UnsignedBundle, Verdict, WatcherConfig } from "./types.ts";
 import { nullDriftAdapter } from "./types.ts";
 
 export interface Assessment {
@@ -55,10 +49,7 @@ export class InteriorWatcher {
   // ── Assessment ──────────────────────────────────────────────
 
   thresholdFor(state: string): number {
-    return (
-      this.config.per_state_thresholds?.[state] ??
-      this.config.default_dwell_threshold_seconds
-    );
+    return this.config.per_state_thresholds?.[state] ?? this.config.default_dwell_threshold_seconds;
   }
 
   async assess(now: number = Date.now()): Promise<Assessment | null> {
@@ -89,11 +80,7 @@ export class InteriorWatcher {
     }
 
     let verdict: Verdict = "healthy";
-    if (
-      driftScore !== null &&
-      this.config.drift_threshold !== undefined &&
-      driftScore >= this.config.drift_threshold
-    ) {
+    if (driftScore !== null && this.config.drift_threshold !== undefined && driftScore >= this.config.drift_threshold) {
       verdict = "drifting";
       findings.push(
         `drift_score ${driftScore.toFixed(3)} at or above threshold ${this.config.drift_threshold} (adapter: ${this.drift.name})`,

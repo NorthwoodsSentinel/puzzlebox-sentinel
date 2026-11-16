@@ -74,7 +74,8 @@ function fail(message: string): never {
 async function runWatch(args: ParsedArgs): Promise<void> {
   const server = flag(args, "server") ?? "http://localhost:3001";
   const puzzleId = flag(args, "puzzle") ?? fail("--puzzle is required");
-  const key = flag(args, "key") ?? process.env.PUZZLEBOX_SENTINEL_KEY ?? fail("--key or PUZZLEBOX_SENTINEL_KEY is required");
+  const key =
+    flag(args, "key") ?? process.env.PUZZLEBOX_SENTINEL_KEY ?? fail("--key or PUZZLEBOX_SENTINEL_KEY is required");
   const transport = (flag(args, "transport") ?? "auto") as TransportChoice;
   if (!["sse", "http", "auto"].includes(transport)) fail(`unknown transport "${transport}"`);
   const intervalSeconds = Number(flag(args, "interval") ?? "5");
@@ -137,7 +138,8 @@ async function runWatch(args: ParsedArgs): Promise<void> {
 }
 
 async function runVerify(args: ParsedArgs): Promise<void> {
-  const key = flag(args, "key") ?? process.env.PUZZLEBOX_SENTINEL_KEY ?? fail("--key or PUZZLEBOX_SENTINEL_KEY is required");
+  const key =
+    flag(args, "key") ?? process.env.PUZZLEBOX_SENTINEL_KEY ?? fail("--key or PUZZLEBOX_SENTINEL_KEY is required");
   const file = args.positional[0];
   const raw = file ? await Bun.file(file).text() : await new Response(Bun.stdin.stream()).text();
   let bundle: unknown;

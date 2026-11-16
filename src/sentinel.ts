@@ -37,9 +37,7 @@ export class Sentinel {
   // the whole load (that fact is logged, never fatal).
   async start(): Promise<void> {
     const uri = puzzleResourceUri(this.opts.puzzleId);
-    const subscribed = await this.client
-      .subscribe(uri, () => this.watcher.recordActivity())
-      .catch(() => false);
+    const subscribed = await this.client.subscribe(uri, () => this.watcher.recordActivity()).catch(() => false);
     this.opts.onLog?.(
       subscribed
         ? `subscribed to ${uri} — resource updates count as activity`
@@ -67,9 +65,7 @@ export class Sentinel {
       });
       snapshot = asSnapshot(raw);
     } catch (e) {
-      this.opts.onLog?.(
-        `snapshot poll failed: ${e instanceof Error ? e.message : e} — skipping cycle`,
-      );
+      this.opts.onLog?.(`snapshot poll failed: ${e instanceof Error ? e.message : e} — skipping cycle`);
       return null;
     }
     if (!snapshot.currentState) {

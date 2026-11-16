@@ -91,10 +91,12 @@ An adapter receives the interior observation (puzzle, state, dwell, activity, av
 ## Tests
 
 ```
-bun test
+bun install
+bun run test         # Vitest with the per-file coverage bar (>= 90 on lines, statements, functions, branches)
+bun run local:gate   # everything CI runs: format check, lint, typecheck, tests with coverage
 ```
 
-Covers canonical-JSON determinism, sign/verify/tamper/wrong-key paths, stuck-state detection with per-state thresholds and warning re-arm, drift adapter success/failure ladders, and an end-to-end run against an in-process mock puzzlebox over real HTTP.
+Covers canonical-JSON determinism, sign/verify/tamper/wrong-key paths, stuck-state detection with per-state thresholds and warning re-arm, drift adapter success/failure ladders, both client transports and their refusal paths, the CLI's argument checks and verify exit codes, and an end-to-end run against an in-process mock puzzlebox over real HTTP. Running the sentinel itself still needs only Bun; the dev dependencies are for the gate. Contributor rules are in [AGENTS.md](AGENTS.md).
 
 ## License
 
