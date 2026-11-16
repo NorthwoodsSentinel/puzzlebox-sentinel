@@ -1,0 +1,7 @@
+# Installs and generated output are never a gate target (AGENTS.md).
+node_modules/
+coverage/
+bun.lock
+.scratch/
+# Prose is out of the format scope: prettier rewrites Markdown (list markers, escapes).
+*.md

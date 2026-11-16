@@ -1,7 +1,7 @@
 // End-to-end against the mock puzzlebox fixture: real HTTP, real JSON-RPC
 // framing, real signing — only the clock is driven by the test.
 
-import { afterAll, beforeAll, describe, expect, test } from "bun:test";
+import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { StreamableHttpClient } from "../src/client.ts";
 import { verifyBundle } from "../src/evidence.ts";
 import { Sentinel } from "../src/sentinel.ts";
@@ -19,7 +19,7 @@ describe("sentinel against a mock puzzlebox", () => {
   const warnings: string[] = [];
 
   beforeAll(async () => {
-    mock = startMockPuzzlebox("SPECIFICATION", ["APPROVE_SPEC"]);
+    mock = await startMockPuzzlebox("SPECIFICATION", ["APPROVE_SPEC"]);
     const client = new StreamableHttpClient(`${mock.url}/mcp`);
     await client.initialize();
     sentinel = new Sentinel(client, {
@@ -32,9 +32,9 @@ describe("sentinel against a mock puzzlebox", () => {
     });
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     sentinel.stop();
-    mock.stop();
+    await mock.stop();
   });
 
   test("first tick observes the state and reports healthy", async () => {

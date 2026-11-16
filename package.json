@@ -8,11 +8,26 @@
     "puzzlebox-sentinel": "src/cli.ts"
   },
   "scripts": {
-    "test": "bun test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --coverage && bun scripts/verify-gate-scope.ts",
+    "local:gate": "bun run format:check && bun run lint && bun run typecheck && bun run test",
     "watch": "bun src/cli.ts watch",
     "verify": "bun src/cli.ts verify"
   },
   "engines": {
     "bun": ">=1.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitest/coverage-v8": "^5.1.0",
+    "bun-types": "^1.4.4",
+    "eslint": "^10.15.0",
+    "prettier": "^3.10.1",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "^5.1.0"
   }
 }

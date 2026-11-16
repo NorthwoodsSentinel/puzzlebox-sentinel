@@ -1,3 +1,7 @@
 node_modules/
 bun.lockb
 *.log
+
+# Gate tooling output and agent scratch space (never committed).
+coverage/
+.scratch/

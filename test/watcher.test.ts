@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { InteriorWatcher } from "../src/watcher.ts";
 import type { DriftAdapter, WatcherConfig } from "../src/types.ts";
 
@@ -99,5 +99,36 @@ describe("InteriorWatcher", () => {
   test("assess before any observation returns null", async () => {
     const w = new InteriorWatcher("p1", config);
     expect(await w.assess(T0)).toBeNull();
+  });
+
+  test("a non-Error throw from the adapter is reported as an unknown error", async () => {
+    const adapter: DriftAdapter = {
+      name: "odd",
+      score: async () => {
+        throw "a string";
+      },
+    };
+    const w = new InteriorWatcher("p1", config, adapter);
+    w.observeState("PLAYING", [], T0);
+    const a = await w.assess(T0);
+    expect(a!.unsigned.findings).toEqual(['drift adapter "odd" failed: unknown error — drift_score degraded to null']);
+  });
+
+  test("a drift score without a configured threshold never makes the verdict drifting", async () => {
+    const adapter: DriftAdapter = { name: "loud", score: async () => 1 };
+    const w = new InteriorWatcher("p1", config, adapter);
+    w.observeState("PLAYING", [], T0);
+    const a = await w.assess(T0 + 1 * SECONDS);
+    expect(a!.unsigned.drift_score).toBe(1);
+    expect(a!.unsigned.verdict).toBe("healthy");
+  });
+
+  test("a score below the threshold is not drifting, and the clock defaults to now", async () => {
+    const adapter: DriftAdapter = { name: "calm", score: async () => 0.1 };
+    const w = new InteriorWatcher("p1", { ...config, drift_threshold: 0.7 }, adapter);
+    w.observeState("PLAYING");
+    const a = await w.assess();
+    expect(a!.unsigned.verdict).toBe("healthy");
+    expect(a!.unsigned.dwell_seconds).toBeLessThan(5);
   });
 });

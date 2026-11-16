@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { canonicalJson, computeHmac, signBundle, verifyBundle } from "../src/evidence.ts";
 import type { UnsignedBundle } from "../src/types.ts";
 
@@ -66,6 +66,15 @@ describe("sign and verify", () => {
     expect(verifyBundle([1, 2, 3], KEY)).toBe(false);
     expect(verifyBundle({ no_hmac: true }, KEY)).toBe(false);
     expect(verifyBundle({ ...sampleUnsigned(), hmac: "zz-not-hex" }, KEY)).toBe(false);
+  });
+
+  test("the right HMAC in a non-canonical spelling is still rejected", () => {
+    // Buffer.from(…, "hex") would decode these to the correct 32 bytes; only the strict 64-lowercase-hex check
+    // stops them, so these cases pin that check.
+    const bundle = signBundle(sampleUnsigned(), KEY);
+    expect(verifyBundle({ ...bundle, hmac: bundle.hmac.toUpperCase() }, KEY)).toBe(false);
+    expect(verifyBundle({ ...bundle, hmac: `${bundle.hmac}zz` }, KEY)).toBe(false);
+    expect(verifyBundle({ ...bundle, hmac: bundle.hmac.slice(0, 62) }, KEY)).toBe(false);
   });
 
   test("hmac is computed over the unsigned fields only", () => {
